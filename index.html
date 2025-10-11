@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Blackjack Pro — Hi-Lo Live Analyzer</title>
+<style>
+  :root{
+    --bg:#071014; --panel:#0d1a1f; --accent:#00d18a; --muted:#9aa9b0; --danger:#ff6b6b;
+    --card:#0b2a2a;
+  }
+  body{background:var(--bg); color:#ecf6f5; font-family:Inter,system-ui,Segoe UI,Arial; margin:0; padding:18px;}
+  header{display:flex;gap:12px;align-items:center}
+  h1{margin:.2rem 0;color:var(--accent)}
+  .container{display:grid;grid-template-columns:360px 1fr;gap:18px;margin-top:12px}
+  .panel{background:var(--panel);padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.6)}
+  label{display:block;color:var(--muted);font-size:12px;margin-top:8px}
+  input[type=text], input[type=number], textarea, select{width:100%;padding:8px;border-radius:8px;border:1px solid #153236;background:#071f20;color:#e8f7f2}
+  button{background:var(--accent);color:#00220f;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;margin-top:8px}
+  .smallbtn{padding:6px 8px;font-size:13px}
+  .row{display:flex;gap:8px;align-items:center}
+  .stat{margin:8px 0;padding:10px;border-radius:10px;background:linear-gradient(180deg,#062b30,#052025);font-size:14px}
+  .muted{color:var(--muted);font-size:13px}
+  .badge{display:inline-block;padding:6px 8px;border-radius:8px;background:#022523;color:#a8f6df;margin-right:6px;font-weight:600}
+  .danger{background:var(--danger);color:#2b0000}
+  .hands{display:flex;gap:12px;flex-wrap:wrap}
+  .hand{min-width:180px;padding:10px;border-radius:10px;background:#071f22}
+  .cards{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .card{background:var(--card);padding:8px 10px;border-radius:8px;min-width:30px;text-align:center;font-weight:700}
+  footer{position:fixed;left:18px;bottom:18px;display:flex;align-items:center;gap:10px}
+  .countdot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid #0a2f26}
+  .green{background:#17d18a;box-shadow:0 0 8px #17d18a66}
+  .red{background:#ff6b6b;box-shadow:0 0 8px #ff6b6b66}
+  .log{max-height:160px;overflow:auto;padding:8px;background:#051517;border-radius:8px;margin-top:8px;font-size:13px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .mini{font-size:13px;padding:6px 8px}
+  .center{display:flex;align-items:center;gap:8px}
+  .settings{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .hint{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🃏 Blackjack Pro — Hi-Lo Live Analyzer</h1>
+    <div class="muted">Continuous count • Splits, doubles • Bankroll & custom bet spread • Keyboard shortcuts H/D/S/U/N/R</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- LEFT: Controls -->
+  <div class="panel">
+    <label>Decks (N#) — set number of decks and start a new shoe</label>
+    <div class="row">
+      <input id="numDecks" type="number" min="1" max="8" value="6"/>
+      <button class="smallbtn" onclick="setDecks()">Set N</button>
+      <button class="smallbtn" onclick="fullReset()">Reset All</button>
+    </div>
+
+    <label>Initial Setup (type then click Analyze)</label>
+    <input id="setup" placeholder="Example: N6 D10 M9 P7"/>
+    <div class="row">
+      <button onclick="processInput()">Analyze / Start Hand</button>
+      <button onclick="nextRound()" class="smallbtn">Next Round</button>
+    </div>
+
+    <hr style="opacity:.08;margin:10px 0">
+
+    <label>Add Player Card (Hit / Double etc.)</label>
+    <div class="row">
+      <input id="addCard" placeholder="e.g. 3, 10, K, A"/>
+      <button onclick="addCard()" class="smallbtn">Add</button>
+      <button onclick="undoLast()" class="smallbtn">Undo</button>
+    </div>
+
+    <hr style="opacity:.08;margin:10px 0">
+
+    <label>Splits / Doubles / Hand Controls</label>
+    <div class="controls">
+      <button onclick="doSplit()" class="mini">Split</button>
+      <button onclick="doDouble()" class="mini">Double</button>
+      <button onclick="finishHand()" class="mini">Finish</button>
+    </div>
+
+    <hr style="opacity:.08;margin:10px 0">
+
+    <label>Bankroll & Betting</label>
+    <div class="settings">
+      <div>
+        <label>Total Bankroll ($)</label>
+        <input id="bankroll" type="number" min="0" value="1000"/>
+      </div>
+      <div>
+        <label>Minimum Bet ($)</label>
+        <input id="minBet" type="number" min="1" value="10"/>
+      </div>
+    </div>
+    <label>Bet Spread Mapping (simple CSV):</label>
+    <textarea id="spreadMap" rows="2">0:1,1:2,2:4,3:8,4:12</textarea>
+    <div class="row">
+      <button onclick="applySpread()">Apply Spread</button>
+      <button onclick="placeSuggestedBet()" class="smallbtn">Place Suggested Bet</button>
+    </div>
+
+    <hr style="opacity:.08;margin:10px 0">
+
+    <label>Record Result</label>
+    <div class="row">
+      <button onclick="recordWin()" class="smallbtn">Record Win</button>
+      <button onclick="recordLoss()" class="smallbtn danger">Record Loss</button>
+      <button onclick="recordPush()" class="smallbtn">Push</button>
+    </div>
+
+    <hr style="opacity:.08;margin:10px 0">
+
+    <label>Settings & Display</label>
+    <div class="row">
+      <button onclick="refreshDisplay()" class="smallbtn">Refresh Display</button>
+      <button onclick="saveSettings()" class="smallbtn">Save Settings</button>
+      <button onclick="loadSettings()" class="smallbtn">Load Settings</button>
+    </div>
+
+    <div style="margin-top:10px" class="log" id="actionLog"></div>
+  </div>
+
+  <!-- RIGHT: Output & Hands -->
+  <div class="panel">
+    <div class="row">
+      <div class="badge">Decks: <span id="displayDecks">6</span></div>
+      <div class="badge">Rounds: <span id="roundCount">0</span></div>
+      <div class="badge">Running: <span id="runningCount">0</span></div>
+      <div class="badge">True: <span id="trueCount">0.00</span></div>
+      <div class="badge">Remaining Decks: <span id="remDecks">6.00</span></div>
+    </div>
+
+    <div style="margin-top:12px" class="hands">
+      <div class="hand">
+        <div class="muted">Dealer (upcard + hole/draws)</div>
+        <div class="cards" id="dealerCards"></div>
+        <div class="muted" id="dealerStatus">Dealer hole: -  • draws: -</div>
+      </div>
+
+      <div id="handContainer" class="hand" style="min-width:260px;">
+        <div class="muted">Player Hands</div>
+        <div id="playerHands"></div>
+      </div>
+
+      <div class="hand" style="min-width:220px;">
+        <div class="muted">Bankroll & Bets</div>
+        <div class="stat">Bankroll: $<span id="displayBankroll">1000</span></div>
+        <div class="stat">Min Bet: $<span id="displayMinBet">10</span></div>
+        <div class="stat">Suggested Bet: $<span id="displaySuggested">10</span></div>
+        <div class="stat">Placed Bet(s): $<span id="displayPlaced">0</span></div>
+        <div class="stat">Wins: <span id="wins">0</span> • Losses: <span id="losses">0</span> • Pushes: <span id="pushes">0</span></div>
+      </div>
+    </div>
+
+    <hr style="opacity:.08;margin:12px 0">
+
+    <div class="muted">Seen cards (counted):</div>
+    <div id="seenList" class="log" style="margin-top:8px;"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="center">
+    <div id="countDot" class="countdot green"></div>
+    <div class="muted">Card counting active</div>
+  </div>
+</footer>
+
+<script>
+/* ====== State ====== */
+let numDecks = 6, runningCount = 0, seenCards = [], dealer={up:null,hole:null,draws:[]}, hands=[], activeHandIndex=0, roundCount=0;
+let bankroll = Number(localStorage.getItem('bj_bankroll')) || 1000;
+let minBet = Number(localStorage.getItem('bj_minBet')) || 10;
+let spreadMap = parseSpread(localStorage.getItem('bj_spread')||'0:1,1:2,2:4,3:8,4:12');
+let lastCard = null;
+let wins=0,losses=0,pushes=0;
+
+/* ====== Utils ====== */
+function logAction(msg){const log=document.getElementById('actionLog');log.innerHTML+=`<div>${msg}</div>`;log.scrollTop=log.scrollHeight;}
+function parseCard(c){c=c.toString().toUpperCase().trim();if(['K','Q','J'].includes(c))return 10;if(c==='A')return 11;let n=parseInt(c);return isNaN(n)?null:n;}
+function handTotal(cards){let total=0,aces=0;cards.forEach(c=>{let v=parseCard(c);total+=v;if(c==='A')aces++});while(total>21 && aces>0){total-=10;aces--}return total;}
+function isSoft(cards){return cards.includes('A') && handTotal(cards)<=21}
+
+/* ====== Deck / Count ====== */
+function updateCountWithCard(c){
+  seenCards.push(c);
+  let v=parseCard(c); 
+  if(v>=2 && v<=6)runningCount++;
+  else if(v===10 || c==='A') runningCount--;
+  updateDisplay();
+}
+function trueCount(){let rem=numDecks-(seenCards.length/52);return rem>0?runningCount/rem:runningCount;}
+
+/* ====== Player Hands ====== */
+function renderHands(){
+  let container=document.getElementById('playerHands');
+  container.innerHTML='';
+  hands.forEach((h,i)=>{
+    let div=document.createElement('div');
+    div.className='hand';
+    div.innerHTML=`<div class="muted">Hand ${i+1}${i===activeHandIndex?' (Active)':''}</div>
+      <div class="cards">${h.cards.map(c=>`<div class="card">${c}</div>`).join('')}</div>
+      <div class="muted">Bet: $${h.placedBet}${h.doubled?' (Doubled)':''} • Total: ${handTotal(h.cards)}</div>`;
+    container.appendChild(div);
+  })
+}
+
+/* ====== Dealer ====== */
+function renderDealer(){
+  const div=document.getElementById('dealerCards');
+  div.innerHTML='';
+  const all=[dealer.up, dealer.hole,...dealer.draws].filter(c=>c!==null);
+  all.forEach(c=>{let d=document.createElement('div');d.className='card';d.innerText=c;div.appendChild(d)});
+  document.getElementById('dealerStatus').innerText=`Dealer hole: ${dealer.hole || '-'} • draws: ${dealer.draws.join(', ')||'-'}`;
+}
+
+/* ====== Display ====== */
+function updateDisplay(){
+  document.getElementById('runningCount').innerText=runningCount;
+  document.getElementById('trueCount').innerText=trueCount().toFixed(2);
+  document.getElementById('remDecks').innerText=(numDecks-seenCards.length/52).toFixed(2);
+  document.getElementById('displayBankroll').innerText=bankroll;
+  document.getElementById('displayMinBet').innerText=minBet;
+  document.getElementById('displayDecks').innerText=numDecks;
+  renderHands();
+  renderDealer();
+  document.getElementById('displayPlaced').innerText=hands.reduce((a,h)=>a+(h.placedBet||0),0);
+  document.getElementById('seenList').innerText=seenCards.join(', ');
+  document.getElementById('roundCount').innerText=roundCount;
+}
+
+/* ====== Hand Actions ====== */
+function addCard(){
+  const val=document.getElementById('addCard').value.trim();
+  if(!val)return;
+  if(!hands[activeHandIndex])hands.push({cards:[],placedBet:minBet,doubled:false});
+  hands[activeHandIndex].cards.push(val);
+  lastCard={type:'player',hand:activeHandIndex,card:val};
+  updateCountWithCard(val);
+  renderHands();
+}
+function undoLast(){
+  if(!lastCard)return;
+  if(lastCard.type==='player') hands[lastCard.hand].cards.pop();
+  else if(lastCard.type==='dealer') dealer.draws.pop();
+  updateDisplay();
+  lastCard=null;
+}
+function doDouble(){let h=hands[activeHandIndex];if(!h)return;h.placedBet*=2;h.doubled=true;logAction('Hand doubled');updateDisplay();}
+function finishHand(){activeHandIndex++;if(activeHandIndex>=hands.length)logAction('All hands finished')}
+function doSplit(){logAction('Split pressed — implement as needed')}
+
+/* ====== Rounds ====== */
+function nextRound(){hands=[];activeHandIndex=0;dealer={up:null,hole:null,draws:[]};roundCount++;updateDisplay();}
+function fullReset(){runningCount=0;seenCards=[];nextRound();}
+
+/* ====== Win/Loss ====== */
+function recordWin(){let payout=hands.reduce((a,h)=>a+(h.placedBet||0),0);bankroll+=payout;wins++;logAction(`WIN +$${payout}`);nextRound();document.getElementById('wins').innerText=wins;updateDisplay();}
+function recordLoss(){let loss=hands.reduce((a,h)=>a+(h.placedBet||0),0);bankroll-=loss;losses++;logAction(`LOSS -$${loss}`);nextRound();document.getElementById('losses').innerText=losses;updateDisplay();}
+function recordPush(){pushes++;logAction('Push — no bankroll change');nextRound();document.getElementById('pushes').innerText=pushes;updateDisplay();}
+
+/* ====== Setup & Decks ====== */
+function setDecks(){numDecks=Number(document.getElementById('numDecks').value)||6;fullReset();logAction(`Decks set to ${numDecks}`);}
+function processInput(){logAction('Process Input pressed — implement parsing if desired');updateDisplay();}
+function refreshDisplay(){updateDisplay();}
+function saveSettings(){localStorage.setItem('bj_bankroll',bankroll);localStorage.setItem('bj_minBet',minBet);localStorage.setItem('bj_spread',JSON.stringify(spreadMap));logAction('Settings saved')}
+function loadSettings(){bankroll=Number(localStorage.getItem('bj_bankroll')||1000);minBet=Number(localStorage.getItem('bj_minBet')||10);spreadMap=JSON.parse(localStorage.getItem('bj_spread')||'{}');updateDisplay();logAction('Settings loaded')}
+function parseSpread(txt){let obj={};txt.split(',').forEach(x=>{let [k,v]=x.split(':');obj[Number(k)]=Number(v)});return obj}
+function applySpread(){spreadMap=parseSpread(document.getElementById('spreadMap').value);logAction('Spread applied')}
+function placeSuggestedBet(){let tc=Math.round(trueCount());let bet=spreadMap[tc]||minBet;hands[activeHandIndex]={cards:[],placedBet:bet,doubled:false};updateDisplay();logAction(`Suggested bet $${bet} placed`)}
+
+/* ====== Keyboard Shortcuts ====== */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  const key=e.key.toUpperCase();
+  if(key==='H'){addCard();} 
+  else if(key==='D'){doDouble();} 
+  else if(key==='S'){finishHand();}
+  else if(key==='U'){undoLast();}
+  else if(key==='N'){nextRound();}
+  else if(key==='R'){fullReset();}
+});
+
+updateDisplay();
+</script>
+
+</body>
+</html>
