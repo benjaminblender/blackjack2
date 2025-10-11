@@ -72,8 +72,8 @@ footer{position:fixed;left:18px;bottom:18px;display:flex;align-items:center;gap:
 
     <label>Add Player Card</label>
     <div class="row">
-      <input id="addCard" placeholder="e.g. 3 or P3"/>
-      <button onclick="addCard()" class="smallbtn">Add</button>
+      <input id="addCard" placeholder="e.g. 3 or P3" onkeydown="if(event.key==='Enter'){ addCardInput(); }"/>
+      <button onclick="addCardInput()" class="smallbtn">Add</button>
       <button onclick="undoLast()" class="smallbtn">Undo</button>
     </div>
 
@@ -82,6 +82,11 @@ footer{position:fixed;left:18px;bottom:18px;display:flex;align-items:center;gap:
     <div class="row">
       <button onclick="setDealerHole()" class="smallbtn">Set Hole & Draws</button>
     </div>
+
+    <hr style="opacity:.08;margin:10px 0">
+
+    <label>Player Actions</label>
+    <div id="playerActions" class="row"></div>
 
     <hr style="opacity:.08;margin:10px 0">
 
@@ -217,13 +222,106 @@ function renderHands(){const container=document.getElementById('playerHands');co
 /* ===== GAME LOGIC ===== */
 function setDecks(){numDecks=Number(document.getElementById('numDecks').value);updateDisplay();logAction(`Decks set to ${numDecks}`);}
 function fullReset(){runningCount=0;seenCards=[];hands=[];dealer={up:null,hole:null,draws:[]};roundCount=0;updateDisplay();logAction('Full reset');}
-function processInput(){hands=[{cards:[],bet:minBet,splitFrom:null,finished:false}];activeHandIndex=0;roundCount++;dealer={up:null,hole:null,draws:[]};updateDisplay();logAction('Hand started');}
-function addCard(){const val=document.getElementById('addCard').value.trim();if(!val)return;const c=normalizeCardToken(val);if(!c)return;hands[activeHandIndex].cards.push(c);updateCountWithCard(c);document.getElementById('addCard').value='';updateDisplay();logAction(`Added ${c} to player hand`);}
-function undoLast(){const h=hands[activeHandIndex];if(h.cards.length>0){const c=h.cards.pop();seenCards.pop();if(hiLoValues.hasOwnProperty(c)) runningCount-=hiLoValues[c];updateDisplay();logAction(`Removed ${c} from hand`)}} 
-function setDealerHole(){let raw=document.getElementById('dealerDraws').value.trim();if(!raw)return;let tokens=raw.split(/[, ]+/).map(normalizeCardToken).filter(Boolean);if(tokens.length===0) return;dealer.hole=tokens.shift();dealer.draws=tokens;if(tokens.length>0) tokens.forEach(c=>updateCountWithCard(c));updateDisplay();logAction(`Dealer hole set: ${dealer.hole}, draws: ${dealer.draws.join(', ')}`);}
-function nextRound(){hands=[{cards:[],bet:minBet,splitFrom:null,finished:false}];activeHandIndex=0;dealer={up:null,hole:null,draws:[]};roundCount++;updateDisplay();logAction('Next round started');}
+function processInput(){hands=[{cards:[],bet:minBet,splitFrom:null,finished:false}];activeHandIndex=0;roundCount++;dealer={up:null,hole:null,draws:[]};updateDisplay();logAction('Hand started'); showPlayerActions();}
+function nextRound(){hands=[{cards:[],bet:minBet,splitFrom:null,finished:false}];activeHandIndex=0;dealer={up:null,hole:null,draws:[]};roundCount++;updateDisplay();logAction('Next round started'); showPlayerActions();}
 function totalPlacedBets(){return hands.reduce((a,h)=>a+h.bet,0);}
 function suggestedBet(){const tc=getTrueCount();let b=minBet;for(let [th,mul] of spreadMap){if(tc>=th) b=minBet*mul;} return b;}
+
+/* ===== ADD CARD / INPUT ===== */
+function addCardInput(){
+    const val = document.getElementById('addCard').value.trim();
+    if(!val) return;
+    const c = normalizeCardToken(val);
+    if(!c) return;
+    hands[activeHandIndex].cards.push(c);
+    updateCountWithCard(c);
+    document.getElementById('addCard').value='';
+    logAction(`Added ${c} to hand ${activeHandIndex+1}`);
+    updateDisplay();
+    checkHandFinished();
+    showPlayerActions();
+}
+function addCard(){ addCardInput(); }
+function undoLast(){const h=hands[activeHandIndex];if(h.cards.length>0){const c=h.cards.pop();seenCards.pop();if(hiLoValues.hasOwnProperty(c)) runningCount-=hiLoValues[c];updateDisplay();logAction(`Removed ${c} from hand`)}} 
+
+/* ===== DEALER HOLE & DRAWS ===== */
+function setDealerHole(){
+    let raw=document.getElementById('dealerDraws').value.trim();
+    if(!raw)return;
+    let tokens=raw.split(/[, ]+/).map(normalizeCardToken).filter(Boolean);
+    if(tokens.length===0) return;
+    dealer.hole=tokens.shift();
+    dealer.draws=tokens;
+    if(tokens.length>0) tokens.forEach(c=>updateCountWithCard(c));
+    updateDisplay();
+    logAction(`Dealer hole set: ${dealer.hole}, draws: ${dealer.draws.join(', ')}`);
+}
+
+/* ===== PLAYER ACTION BUTTONS ===== */
+function showPlayerActions() {
+    const container = document.getElementById('playerActions');
+    container.innerHTML = '';
+    if(hands.length===0) return;
+    const hand = hands[activeHandIndex];
+    if(hand.finished) return;
+
+    const hitBtn = document.createElement('button');
+    hitBtn.innerText = 'Hit';
+    hitBtn.onclick = () => { addCardInput(); checkHandFinished(); showPlayerActions(); };
+    container.appendChild(hitBtn);
+
+    const standBtn = document.createElement('button');
+    standBtn.innerText = 'Stand';
+    standBtn.onclick = () => { hand.finished = true; nextActiveHand(); };
+    container.appendChild(standBtn);
+
+    if(hand.cards.length === 2){
+        const doubleBtn = document.createElement('button');
+        doubleBtn.innerText = 'Double';
+        doubleBtn.onclick = () => { hand.bet *= 2; addCardInput(); hand.finished = true; nextActiveHand(); };
+        container.appendChild(doubleBtn);
+    }
+
+    if(hand.cards.length === 2 && hand.cards[0] === hand.cards[1]){
+        const splitBtn = document.createElement('button');
+        splitBtn.innerText = 'Split';
+        splitBtn.onclick = () => { splitHand(); showPlayerActions(); };
+        container.appendChild(splitBtn);
+    }
+}
+
+function nextActiveHand(){
+    for(let i=0;i<hands.length;i++){
+        if(!hands[i].finished){
+            activeHandIndex = i;
+            showPlayerActions();
+            updateDisplay();
+            return;
+        }
+    }
+    document.getElementById('playerActions').innerHTML = '';
+    updateDisplay();
+    logAction('All hands finished');
+}
+
+function checkHandFinished(){
+    const hand = hands[activeHandIndex];
+    const total = handTotal(hand.cards);
+    if(total >= 21){ 
+        hand.finished = true; 
+        nextActiveHand(); 
+    }
+}
+
+/* ===== SPLIT HAND ===== */
+function splitHand(){
+    const hand = hands[activeHandIndex];
+    if(hand.cards.length!==2) return;
+    const newHand = {cards:[hand.cards.pop()],bet:hand.bet,splitFrom:activeHandIndex,finished:false};
+    hands.splice(activeHandIndex+1,0,newHand);
+    updateDisplay();
+    logAction(`Hand ${activeHandIndex+1} split`);
+}
 
 /* ===== RECORD RESULTS ===== */
 function recordWin(){wins++;bankroll+=totalPlacedBets();updateDisplay();logAction('Hand marked WIN');}
@@ -238,7 +336,6 @@ function placeSuggestedBet(){hands[activeHandIndex].bet=suggestedBet();updateDis
 function recommendMove(playerCards,dealerUp){
     const total = handTotal(playerCards);
     const soft = isSoft(playerCards);
-    // Basic strategy simplified
     if(playerCards.length===2 && playerCards[0]===playerCards[1]){
         if(['A','8'].includes(playerCards[0])) return 'Split';
         if(['10','5'].includes(playerCards[0])) return 'Stand';
@@ -282,11 +379,11 @@ function updateRecommendation(){
 
 /* ===== KEYBOARD SHORTCUTS ===== */
 document.addEventListener('keydown',e=>{
-    if(e.key==='h') addCard();       // hit
-    if(e.key==='u') undoLast();      // undo
-    if(e.key==='w') recordWin();     // win
-    if(e.key==='l') recordLoss();    // loss
-    if(e.key==='p') recordPush();    // push
+    if(e.key==='h') addCardInput();
+    if(e.key==='u') undoLast();
+    if(e.key==='w') recordWin();
+    if(e.key==='l') recordLoss();
+    if(e.key==='p') recordPush();
 });
 
 updateDisplay();
