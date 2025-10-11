@@ -150,8 +150,12 @@
 
   function calcTrueCount(){
     const totalCards=numDecks*52;
-    const remainingDecks=Math.max((totalCards-seenCards.length)/52,1);
+    const remainingDecks=Math.max(deck.length/52, 1);
     return (runningCount/remainingDecks).toFixed(2);
+  }
+
+  function calcDecksRemaining(){
+    return (deck.length/52).toFixed(2);
   }
 
   function handTotal(cards){
@@ -189,6 +193,7 @@
     const isSoft = playerCards.includes('A') && playerTotal<=21 && playerTotal-11<10;
     const dealerVal = dealerCard ? cardValue(dealerCard) : 0;
     const trueCount = calcTrueCount();
+    const decksRemaining = calcDecksRemaining();
     const strategy = dealerCard ? basicStrategy(playerTotal,dealerVal,isSoft) : "-";
 
     let betAdvice="Minimum Bet";
@@ -197,6 +202,7 @@
 
     document.getElementById("output").innerHTML=`
       <div class="stat">Decks: <span class="highlight">${numDecks}</span></div>
+      <div class="stat">Decks Remaining: <span class="highlight">${decksRemaining}</span></div>
       <div class="stat">Dealer: <span class="highlight">${dealerCard||"-"}</span></div>
       <div class="stat">Player: <span class="highlight">${playerCards.join(", ")||"-"}</span> (Total = ${playerTotal})</div>
       <div class="stat">Other Players: <span class="highlight">${otherCards.join(", ")||"-"}</span></div>
