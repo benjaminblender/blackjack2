@@ -6,81 +6,133 @@
     <title>For Edith</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f7f7ff;
             margin: 0;
             padding: 0;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffd6e8, #ffeaf4);
+            overflow-x: hidden;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
+        .slideshow {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 60px auto;
         }
-        .card {
+        .slide {
+            display: none;
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 40px;
+            margin: 20px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            animation: float 4s ease-in-out infinite;
         }
-        h1 {
-            font-size: 2.5rem;
-            color: #4b3ca6;
-            margin-bottom: 10px;
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
         }
-        h2 {
-            color: #6b5edb;
-            font-weight: 500;
-            margin-top: 30px;
+        .slide h1, .slide h2 {
+            color: #ff4f9c;
+            text-align: center;
         }
-        p {
-            line-height: 1.7;
-            font-size: 1.1rem;
-        }
-        .signature {
-            margin-top: 40px;
-            font-style: italic;
+        .slide p {
             font-size: 1.2rem;
-            color: #555;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .dots {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .dot {
+            height: 14px;
+            width: 14px;
+            margin: 0 5px;
+            background-color: #ffb3d9;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .active {
+            background-color: #ff4f9c;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h1>For Edith</h1>
-            <p>
-                The world feels loud sometimes. People come and go, promises fade, and it can be hard to believe that 
-                good people still exist — people who genuinely care, who listen, who actually mean what they say.
-            </p>
-            <p>
-                But I want you to know something simple and true: <strong>good guys do exist</strong>. Guys who respect you,
-                who value you, who understand emotional intelligence, kindness, and vulnerability. Guys who don't run
-                when things get real — they show up stronger. Even if distance separates two people, character doesn't.
-            </p>
-            <h2>You deserve reassurance</h2>
-            <p>
-                You deserve people who make you feel safe. Who remind you that your heart isn't something to be played
-                with. You deserve support, stability, connection — the kind that doesn't break just because miles are
-                in the middle.
-            </p>
-            <p>
-                And I want you to know I'm one of the people who actually cares. Someone who sees your worth, respects
-                your dreams, and believes in the good you're building in your life. Distance doesn't change sincerity.
-            </p>
-            <h2>Emotional intelligence matters</h2>
-            <p>
-                It's not just about talking — it's about understanding. Listening. Responding with patience. Knowing how
-                to comfort, not just impress. Real connection grows where empathy lives.
-            </p>
-            <p>
-                You're not alone in this world, Edith. There are still people — good, genuine people — who want the best
-                for you. And I'm one of them.
-            </p>
-            <p class="signature">
-                — Someone who sees the good in you
-            </p>
-        </div>
+
+<div class="slideshow">
+    <div class="slide" style="display:block;">
+        <h1>Hi Edith 💗</h1>
+        <p>
+            This little page is here to remind you of something important: there are still good guys in the world.
+            Guys who care, who listen, who actually *feel* things deeply — who understand the value of emotional
+            intelligence and kindness.
+        </p>
     </div>
+
+    <div class="slide">
+        <h2>You Deserve Softness 🌸</h2>
+        <p>
+            You deserve reassurance, comfort, safety — the kind that wraps around you even from far away.
+            Distance doesn't change sincerity. Real care travels.
+        </p>
+    </div>
+
+    <div class="slide">
+        <h2>Good People Still Exist 💞</h2>
+        <p>
+            Even if the world feels heavy or disappointing sometimes, please know this: genuine, gentle, loving
+            people still exist. People who want the best for you. People who appreciate your heart.
+        </p>
+    </div>
+
+    <div class="slide">
+        <h2>I See Your Worth 🌷</h2>
+        <p>
+            And I’m one of the people who truly cares about you. Your dreams matter. Your feelings matter. Your
+            happiness matters.
+        </p>
+    </div>
+
+    <div class="slide">
+        <h2>You’re Not Alone 💐</h2>
+        <p>
+            No matter the distance, no matter the time — I’m someone who sees the good in you, respects you, and
+            believes in the beautiful things you're building in your life.
+        </p>
+    </div>
+</div>
+
+<div class="dots">
+    <span class="dot active" onclick="showSlide(0)"></span>
+    <span class="dot" onclick="showSlide(1)"></span>
+    <span class="dot" onclick="showSlide(2)"></span>
+    <span class="dot" onclick="showSlide(3)"></span>
+    <span class="dot" onclick="showSlide(4)"></span>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.getElementsByClassName("slide");
+    const dots = document.getElementsByClassName("dot");
+
+    function showSlide(n) {
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+            dots[i].classList.remove("active");
+        }
+        slides[n].style.display = "block";
+        dots[n].classList.add("active");
+        currentSlide = n;
+    }
+
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }, 5000);
+</script>
+
 </body>
 </html>
