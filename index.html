@@ -1,136 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Edith 💗</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #ffd6e8, #ffeaf4);
-        }
-        .slideshow {
-            position: relative;
-            width: 90%;
-            max-width: 900px;
-            margin: 60px auto;
-            cursor: pointer;
-        }
-        .slide {
-            display: none;
-            background: white;
-            padding: 40px;
-            margin: 20px 0;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-        }
-        .slide h1, .slide h2 {
-            color: #ff4f9c;
-            text-align: center;
-        }
-        .slide p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: #444;
-        }
-        .dots {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .dot {
-            height: 14px;
-            width: 14px;
-            margin: 0 5px;
-            background-color: #ffb3d9;
-            border-radius: 50%;
-            display: inline-block;
-            cursor: pointer;
-        }
-        .active {
-            background-color: #ff4f9c;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edith's Corner 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background: linear-gradient(135deg,#ffe6f0,#fff8e7);
+  transition: background 1s ease;
+  overflow-x:hidden;
+  color:#444;
+  min-height:100vh;
+}
+header{
+  text-align:center;
+  padding:3rem 1rem 2rem;
+}
+header h1{
+  font-family:'Dancing Script',cursive;
+  font-size:3rem;
+  margin:0;
+  color:#d94f70;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+header p{
+  font-size:1.2rem;
+  margin-top:0.5rem;
+  color:#555;
+}
+.moods{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin:2rem 0;
+  gap:1rem;
+}
+.btn-mood{
+  background:linear-gradient(145deg,#ffb3c6,#ffcce0);
+  border:none;
+  border-radius:50px;
+  padding:1rem 2rem;
+  font-size:1.2rem;
+  cursor:pointer;
+  color:white;
+  font-weight:600;
+  transition:all 0.3s ease;
+  box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+.btn-mood:hover{
+  transform:translateY(-5px) scale(1.1);
+  box-shadow:0 15px 25px rgba(0,0,0,0.3);
+}
+.page{
+  display:none;
+  padding:2rem 1rem;
+  animation: fadeIn 1s ease;
+  max-width:600px;
+  margin:0 auto;
+}
+.active{display:block;}
+.note-card{
+  background:#fff;
+  border-radius:25px;
+  padding:2rem;
+  margin:2rem auto;
+  font-size:1.2rem;
+  line-height:1.6;
+  box-shadow:0 12px 25px rgba(0,0,0,0.15);
+  opacity:0;
+  transform:translateY(30px);
+  animation: popUp 0.6s forwards;
+  text-align:center;
+}
+.btn-note{
+  margin-top:1rem;
+  background:#ffd6e0;
+  color:#d94f70;
+  border:none;
+  border-radius:30px;
+  padding:0.8rem 2rem;
+  font-size:1rem;
+  cursor:pointer;
+  font-weight:600;
+  transition:all 0.3s ease;
+}
+.btn-note:hover{
+  transform:scale(1.1) rotate(-1deg);
+  box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+.btn-back{
+  margin-top:2rem;
+  background:#ffb3c6;
+  color:white;
+  border:none;
+  border-radius:25px;
+  padding:0.6rem 1.5rem;
+  font-size:0.95rem;
+  cursor:pointer;
+  transition:transform 0.3s;
+}
+.btn-back:hover{transform:scale(1.1);}
+footer{
+  text-align:center;
+  font-size:0.9rem;
+  color:#777;
+  padding:2rem 1rem;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes popUp{from{opacity:0; transform:translateY(30px);}to{opacity:1; transform:translateY(0);}}
+</style>
 </head>
 <body>
 
-<div class="slideshow" id="slideshow">
-    <div class="slide">
-        <h1>Hi Edith 💗</h1>
-        <p>There are still good guys in the world who care deeply and genuinely about you.</p>
-    </div>
-    <div class="slide">
-        <h2>You Deserve Softness 🌸</h2>
-        <p>You deserve reassurance, comfort, and safety — distance doesn't change sincerity.</p>
-    </div>
-    <div class="slide">
-        <h2>Good People Still Exist 💞</h2>
-        <p>Genuine, loving people still exist. People who appreciate your heart and your mind.</p>
-    </div>
-    <div class="slide">
-        <h2>You're Beautiful, Edith 💗</h2>
-        <p>Your presence, your voice, your energy… it’s soft, bright, and unforgettable.</p>
-    </div>
-    <div class="slide">
-        <h2>You Deserve Communication 💬💞</h2>
-        <p>Talking with you is natural and easy. Real people want to connect and understand you.</p>
-    </div>
-    <div class="slide">
-        <h2>You’re Worth the Effort 🌷</h2>
-        <p>Distance doesn't make you harder to care for — it makes you more special.</p>
-    </div>
-    <div class="slide">
-        <h2>You’re One of the Softest Souls 💖</h2>
-        <p>You feel deeply, you care honestly, and you love with intention — that is rare and precious.</p>
-    </div>
-    <div class="slide">
-        <h2>I Appreciate You 🕊️</h2>
-        <p>Everything about you — your dreams, your emotions, your strength and your softness — deserves to be cherished.</p>
-    </div>
-    <div class="slide">
-        <h2>Every Message Counts 💌</h2>
-        <p>Even small messages can carry big meaning. Your thoughts, feelings, and words are always valued.</p>
-    </div>
-    <div class="slide">
-        <h2>You're Never Alone 🌸</h2>
-        <p>No matter the distance or time, there are people who see your worth, care for you, and celebrate you.</p>
-    </div>
+<header>
+  <h1>Edith's Corner 🌸</h1>
+  <p>Welcome to your personal corner of encouragement</p>
+</header>
+
+<!-- Home Page -->
+<div id="home" class="page active">
+  <p style="text-align:center; font-size:1.2rem;">How are you feeling today?</p>
+  <div class="moods">
+    <button class="btn-mood" onclick="showPage('sad','#cce0ff')">😢 Sad</button>
+    <button class="btn-mood" onclick="showPage('happy','#fff7b3')">😊 Happy</button>
+    <button class="btn-mood" onclick="showPage('overwhelmed','#ffd9b3')">😵 Overwhelmed</button>
+    <button class="btn-mood" onclick="showPage('tired','#d6c1ff')">😴 Tired</button>
+  </div>
 </div>
 
-<div class="dots">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
+<!-- Mood Pages -->
+<div id="sad" class="page">
+  <h2>Feeling a bit sad</h2>
+  <button class="btn-note" onclick="showNote('sad')">Get a note</button>
+  <div id="note-sad" class="note-card"></div>
+  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
 </div>
+
+<div id="happy" class="page">
+  <h2>Feeling happy today</h2>
+  <button class="btn-note" onclick="showNote('happy')">Get a note</button>
+  <div id="note-happy" class="note-card"></div>
+  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
+</div>
+
+<div id="overwhelmed" class="page">
+  <h2>Feeling overwhelmed</h2>
+  <button class="btn-note" onclick="showNote('overwhelmed')">Get a note</button>
+  <div id="note-overwhelmed" class="note-card"></div>
+  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
+</div>
+
+<div id="tired" class="page">
+  <h2>Feeling tired</h2>
+  <button class="btn-note" onclick="showNote('tired')">Get a note</button>
+  <div id="note-tired" class="note-card"></div>
+  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
+</div>
+
+<footer>
+  <p>Made just for you 🌷</p>
+</footer>
 
 <script>
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.dot');
+const notes = {
+  sad:[
+    "Even when you feel invisible, there is always someone who sees you. You are special and amazing.",
+    "When your eyes are tired, just remember love matters more than words can say.",
+    "It’s okay to cry sometimes. It doesn’t make you weak.",
+    "I know you are feeling down, but just remember how perfect you really are.",
+    "You are loved more than you know.",
+    "Even on gloomy days, you’re a sunshine.",
+    "When you feel sad, remember you’re a beautiful, smart, and loving person, Edith."
+  ],
+  happy:[
+    "Your laughter is contagious.",
+    "Even the busiest days can have joyful moments.",
+    "You have the prettiest smile. Please keep smiling.",
+    "You make ordinary days special for everyone around you."
+  ],
+  overwhelmed:[
+    "I know it may be hard, but remember to take one breath at a time.",
+    "It’s okay to ask for help if you need it.",
+    "You’ve survived every overwhelming day before, you can do it again.",
+    "I believe in you.",
+    "Even small progress is progress.",
+    "Remember to smile even through all the challenges."
+  ],
+  tired:[
+    "Rest is not lazy. You deserve it.",
+    "Coffee can wait, but your well-being cannot.",
+    "Take a break. You deserve time to yourself."
+  ]
+};
 
-    function showSlide(n) {
-        slides.forEach((slide, i) => {
-            slide.style.display = (i === n) ? 'block' : 'none';
-            dots[i].classList.toggle('active', i === n);
-        });
-        currentSlide = n;
-    }
+// Track the current index for each mood
+const noteIndex = { sad:0, happy:0, overwhelmed:0, tired:0 };
 
-    document.getElementById('slideshow').addEventListener('click', () => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    });
+function showPage(pageId,bgColor){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.body.style.background=bgColor;
+}
 
-    // Initialize first slide
-    showSlide(currentSlide);
+function showNote(mood){
+  const arr = notes[mood];
+  const idx = noteIndex[mood];
+  const noteCard = document.getElementById('note-'+mood);
+  noteCard.innerText = arr[idx];
+  noteCard.style.opacity = 0;
+  noteCard.style.transform = 'translateY(20px)';
+  setTimeout(()=>{
+    noteCard.style.opacity = 1;
+    noteCard.style.transform = 'translateY(0)';
+  },50);
+  noteIndex[mood] = (idx + 1) % arr.length;
+}
 </script>
 
 </body>
