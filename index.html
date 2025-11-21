@@ -157,16 +157,16 @@
 
 <script>
     let currentSlide = 0;
-    const slides = document.getElementsByClassName("slide");
-    const dots = document.getElementsByClassName("dot");
+    const slides = document.getElementsByClassName('slide');
+    const dots = document.getElementsByClassName('dot');
 
     function showSlide(n) {
         for (let i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-            dots[i].classList.remove("active");
+            slides[i].style.display = 'none';
+            dots[i].classList.remove('active');
         }
-        slides[n].style.display = "block";
-        dots[n].classList.add("active");
+        slides[n].style.display = 'block';
+        dots[n].classList.add('active');
         currentSlide = n;
     }
 
@@ -175,9 +175,11 @@
         showSlide(currentSlide);
     }
 
-    for (let i = 0; i < slides.length; i++) {
-        slides[i].onclick = nextSlide;
-    }
+    // Make entire slideshow clickable instead of each slide
+    document.querySelector('.slideshow').addEventListener('click', nextSlide);
+
+    // Start with first slide shown
+    showSlide(0);
 </script>
 
 </body>
