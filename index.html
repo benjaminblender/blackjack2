@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>For Edith</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Edith 💗</title>
     <style>
         body {
             margin: 0;
@@ -56,9 +56,9 @@
 <body>
 
 <div class="slideshow" id="slideshow">
-    <div class="slide" style="display:block;">
+    <div class="slide">
         <h1>Hi Edith 💗</h1>
-        <p>This little page is here to remind you that there are still good guys in the world who care deeply.</p>
+        <p>There are still good guys in the world who care deeply and genuinely about you.</p>
     </div>
     <div class="slide">
         <h2>You Deserve Softness 🌸</h2>
@@ -66,24 +66,44 @@
     </div>
     <div class="slide">
         <h2>Good People Still Exist 💞</h2>
-        <p>Genuine, loving people still exist. People who appreciate your heart.</p>
+        <p>Genuine, loving people still exist. People who appreciate your heart and your mind.</p>
     </div>
     <div class="slide">
         <h2>You're Beautiful, Edith 💗</h2>
-        <p>Your presence, your voice, your energy… it’s all soft, bright, and unforgettable.</p>
+        <p>Your presence, your voice, your energy… it’s soft, bright, and unforgettable.</p>
     </div>
     <div class="slide">
         <h2>You Deserve Communication 💬💞</h2>
-        <p>Talking to you is natural and easy. Real people want to understand you.</p>
+        <p>Talking with you is natural and easy. Real people want to connect and understand you.</p>
     </div>
     <div class="slide">
         <h2>You’re Worth the Effort 🌷</h2>
         <p>Distance doesn't make you harder to care for — it makes you more special.</p>
     </div>
+    <div class="slide">
+        <h2>You’re One of the Softest Souls 💖</h2>
+        <p>You feel deeply, you care honestly, and you love with intention — that is rare and precious.</p>
+    </div>
+    <div class="slide">
+        <h2>I Appreciate You 🕊️</h2>
+        <p>Everything about you — your dreams, your emotions, your strength and your softness — deserves to be cherished.</p>
+    </div>
+    <div class="slide">
+        <h2>Every Message Counts 💌</h2>
+        <p>Even small messages can carry big meaning. Your thoughts, feelings, and words are always valued.</p>
+    </div>
+    <div class="slide">
+        <h2>You're Never Alone 🌸</h2>
+        <p>No matter the distance or time, there are people who see your worth, care for you, and celebrate you.</p>
+    </div>
 </div>
 
 <div class="dots">
-    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
@@ -93,16 +113,14 @@
 
 <script>
     let currentSlide = 0;
-    const slides = document.getElementsByClassName('slide');
-    const dots = document.getElementsByClassName('dot');
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
 
     function showSlide(n) {
-        for (let i = 0; i < slides.length; i++) {
-            slides[i].style.display = 'none';
-            dots[i].classList.remove('active');
-        }
-        slides[n].style.display = 'block';
-        dots[n].classList.add('active');
+        slides.forEach((slide, i) => {
+            slide.style.display = (i === n) ? 'block' : 'none';
+            dots[i].classList.toggle('active', i === n);
+        });
         currentSlide = n;
     }
 
@@ -110,6 +128,9 @@
         currentSlide = (currentSlide + 1) % slides.length;
         showSlide(currentSlide);
     });
+
+    // Initialize first slide
+    showSlide(currentSlide);
 </script>
 
 </body>
