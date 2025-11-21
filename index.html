@@ -10,27 +10,21 @@
             padding: 0;
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #ffd6e8, #ffeaf4);
-            overflow-x: hidden;
         }
         .slideshow {
             position: relative;
-            width: 100%;
+            width: 90%;
             max-width: 900px;
             margin: 60px auto;
+            cursor: pointer;
         }
         .slide {
             display: none;
             background: white;
             padding: 40px;
-            margin: 20px;
+            margin: 20px 0;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
-            100% { transform: translateY(0px); }
         }
         .slide h1, .slide h2 {
             color: #ff4f9c;
@@ -41,7 +35,6 @@
             line-height: 1.8;
             color: #444;
         }
-
         .dots {
             text-align: center;
             margin-top: 20px;
@@ -62,97 +55,40 @@
 </head>
 <body>
 
-<div class="slideshow">
+<div class="slideshow" id="slideshow">
     <div class="slide" style="display:block;">
         <h1>Hi Edith 💗</h1>
-        <p>
-            This little page is here to remind you of something important: there are still good guys in the world.
-            Guys who care, who listen, who actually *feel* things deeply — who understand the value of emotional
-            intelligence and kindness.
-        </p>
+        <p>This little page is here to remind you that there are still good guys in the world who care deeply.</p>
     </div>
-
     <div class="slide">
         <h2>You Deserve Softness 🌸</h2>
-        <p>
-            You deserve reassurance, comfort, safety — the kind that wraps around you even from far away.
-            Distance doesn't change sincerity. Real care travels.
-        </p>
+        <p>You deserve reassurance, comfort, and safety — distance doesn't change sincerity.</p>
     </div>
-
     <div class="slide">
         <h2>Good People Still Exist 💞</h2>
-        <p>
-            Even if the world feels heavy or disappointing sometimes, please know this: genuine, gentle, loving
-            people still exist. People who want the best for you. People who appreciate your heart.
-        </p>
+        <p>Genuine, loving people still exist. People who appreciate your heart.</p>
     </div>
-
-    <div class="slide">
-        <h2>I See Your Worth 🌷</h2>
-        <p>
-            And I’m one of the people who truly cares about you. Your dreams matter. Your feelings matter. Your
-            happiness matters.
-        </p>
-    </div>
-
-    <div class="slide">
-        <h2>You’re Not Alone 💐</h2>
-        <p>
-            No matter the distance, no matter the time — I’m someone who sees the good in you, respects you, and
-            believes in the beautiful things you're building in your life.
-        </p>
-    </div>
-
     <div class="slide">
         <h2>You're Beautiful, Edith 💗</h2>
-        <p>
-            You don’t just look beautiful — you *feel* beautiful. Your presence, your voice, your energy…
-            it’s all soft and bright and unforgettable. You carry this glow that makes people feel warm.
-        </p>
+        <p>Your presence, your voice, your energy… it’s all soft, bright, and unforgettable.</p>
     </div>
-
     <div class="slide">
         <h2>You Deserve Communication 💬💞</h2>
-        <p>
-            And the truth is… communication with you isn’t hard. It’s easy. Natural. Comfortable.
-            You should never have to chase it — real men *want* to talk to you, want to check on you,
-            want to understand you.
-        </p>
+        <p>Talking to you is natural and easy. Real people want to understand you.</p>
     </div>
-
     <div class="slide">
         <h2>You’re Worth the Effort 🌷</h2>
-        <p>
-            The distance doesn’t make you harder to care for — it just makes you more special.
-            Anyone who truly sees you knows you’re worth every message, every call, every moment.
-        </p>
+        <p>Distance doesn't make you harder to care for — it makes you more special.</p>
     </div>
-
-    <div class="slide">
-        <h2>You’re One of the Softest Souls 💖</h2>
-        <p>
-            You feel deeply, you care honestly, and you love with intention. That’s rare. That’s precious.
-            And you deserve someone who understands how gentle your heart is.
-        </p>
-    </div>
-
-    <div class="slide">
-        <h2>I Appreciate You 🕊️</h2>
-        <p>
-            Everything about you — your dreams, your emotions, your strength and your softness — deserves
-            to be seen, respected, and cherished.
-        </p>
-    </div>
-
 </div>
 
 <div class="dots">
-    <span class="dot active" onclick="showSlide(0)"></span>
-    <span class="dot" onclick="showSlide(1)"></span>
-    <span class="dot" onclick="showSlide(2)"></span>
-    <span class="dot" onclick="showSlide(3)"></span>
-    <span class="dot" onclick="showSlide(4)"></span>
+    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
 </div>
 
 <script>
@@ -161,36 +97,19 @@
     const dots = document.getElementsByClassName('dot');
 
     function showSlide(n) {
-        // Hide all except the one we want
         for (let i = 0; i < slides.length; i++) {
-            slides[i].style.opacity = '0';
-            slides[i].style.pointerEvents = 'none';
+            slides[i].style.display = 'none';
             dots[i].classList.remove('active');
         }
-
         slides[n].style.display = 'block';
-        setTimeout(() => {
-            slides[n].style.opacity = '1';
-            slides[n].style.pointerEvents = 'auto';
-        }, 50);
-
         dots[n].classList.add('active');
         currentSlide = n;
     }
 
-    function nextSlide() {
+    document.getElementById('slideshow').addEventListener('click', () => {
         currentSlide = (currentSlide + 1) % slides.length;
         showSlide(currentSlide);
-    }() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }
-
-    // Make entire slideshow clickable instead of each slide
-    document.querySelector('.slideshow').addEventListener('click', nextSlide);
-
-    // Start with first slide shown
-    showSlide(0);
+    });
 </script>
 
 </body>
