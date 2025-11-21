@@ -32,14 +32,14 @@ header p{
   margin-top:0.5rem;
   color:#555;
 }
-.moods{
+.options{
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
-  margin:2rem 0;
+  margin:3rem 0;
   gap:1rem;
 }
-.btn-mood{
+.btn-option{
   background:linear-gradient(145deg,#ffb3c6,#ffcce0);
   border:none;
   border-radius:50px;
@@ -51,7 +51,7 @@ header p{
   transition:all 0.3s ease;
   box-shadow:0 5px 20px rgba(0,0,0,0.2);
 }
-.btn-mood:hover{
+.btn-option:hover{
   transform:translateY(-5px) scale(1.1);
   box-shadow:0 15px 25px rgba(0,0,0,0.3);
 }
@@ -121,44 +121,44 @@ footer{
   <p>Welcome to your personal corner of encouragement</p>
 </header>
 
-<!-- Home Page -->
-<div id="home" class="page active">
-  <p style="text-align:center; font-size:1.2rem;">How are you feeling today?</p>
-  <div class="moods">
-    <button class="btn-mood" onclick="showPage('sad','#cce0ff')">😢 Sad</button>
-    <button class="btn-mood" onclick="showPage('happy','#fff7b3')">😊 Happy</button>
-    <button class="btn-mood" onclick="showPage('overwhelmed','#ffd9b3')">😵 Overwhelmed</button>
-    <button class="btn-mood" onclick="showPage('tired','#d6c1ff')">😴 Tired</button>
+<!-- Options Page -->
+<div id="options" class="page active">
+  <p style="text-align:center; font-size:1.2rem;">What do you need right now?</p>
+  <div class="options">
+    <button class="btn-option" onclick="showPage('reassurance','#ffe6f0')">Need Reassurance?</button>
+    <button class="btn-option" onclick="showPage('sad','#cce0ff')">Feeling Sad</button>
+    <button class="btn-option" onclick="showPage('happy','#fff7b3')">Feeling Happy</button>
+    <button class="btn-option" onclick="showPage('tired','#d6c1ff')">Feeling Tired</button>
   </div>
 </div>
 
 <!-- Mood Pages -->
+<div id="reassurance" class="page">
+  <h2>Need some reassurance?</h2>
+  <button class="btn-note" onclick="showNote('reassurance')">Get a note</button>
+  <div id="note-reassurance" class="note-card"></div>
+  <button class="btn-back" onclick="showPage('options','#ffe6f0')">⬅ Back</button>
+</div>
+
 <div id="sad" class="page">
   <h2>Feeling a bit sad</h2>
   <button class="btn-note" onclick="showNote('sad')">Get a note</button>
   <div id="note-sad" class="note-card"></div>
-  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
+  <button class="btn-back" onclick="showPage('options','#ffe6f0')">⬅ Back</button>
 </div>
 
 <div id="happy" class="page">
   <h2>Feeling happy today</h2>
   <button class="btn-note" onclick="showNote('happy')">Get a note</button>
   <div id="note-happy" class="note-card"></div>
-  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
-</div>
-
-<div id="overwhelmed" class="page">
-  <h2>Feeling overwhelmed</h2>
-  <button class="btn-note" onclick="showNote('overwhelmed')">Get a note</button>
-  <div id="note-overwhelmed" class="note-card"></div>
-  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
+  <button class="btn-back" onclick="showPage('options','#ffe6f0')">⬅ Back</button>
 </div>
 
 <div id="tired" class="page">
   <h2>Feeling tired</h2>
   <button class="btn-note" onclick="showNote('tired')">Get a note</button>
   <div id="note-tired" class="note-card"></div>
-  <button class="btn-back" onclick="showPage('home','#ffe6f0')">⬅ Back</button>
+  <button class="btn-back" onclick="showPage('options','#ffe6f0')">⬅ Back</button>
 </div>
 
 <footer>
@@ -167,28 +167,30 @@ footer{
 
 <script>
 const notes = {
+  reassurance:[
+    "I will always listen to the voice that deserves to be heard.",
+    "Your feelings are important and valid.",
+    "No matter the distance, you are seen, valued, and appreciated.",
+    "You deserve love, care, and patience, Edith.",
+    "Even when things feel heavy, I am here to remind you how incredible you are.",
+    "Your heart and voice matter immensely.",
+    "I believe in you, your strength, and your tenderness.",
+    "You are never alone, Edith, even on the toughest days.",
+    "Take a deep breath, you are supported and cherished.",
+    "You bring light to those around you just by being yourself."
+  ],
   sad:[
-    "Even when you feel invisible, there is always someone who sees you. You are special and amazing.",
-    "When your eyes are tired, just remember love matters more than words can say.",
+    "Even when you feel invisible, there is always someone who sees you.",
+    "When your eyes are tired, remember love matters more than words can say.",
     "It’s okay to cry sometimes. It doesn’t make you weak.",
-    "I know you are feeling down, but just remember how perfect you really are.",
     "You are loved more than you know.",
-    "Even on gloomy days, you’re a sunshine.",
-    "When you feel sad, remember you’re a beautiful, smart, and loving person, Edith."
+    "Even on gloomy days, you’re a sunshine."
   ],
   happy:[
     "Your laughter is contagious.",
     "Even the busiest days can have joyful moments.",
     "You have the prettiest smile. Please keep smiling.",
     "You make ordinary days special for everyone around you."
-  ],
-  overwhelmed:[
-    "I know it may be hard, but remember to take one breath at a time.",
-    "It’s okay to ask for help if you need it.",
-    "You’ve survived every overwhelming day before, you can do it again.",
-    "I believe in you.",
-    "Even small progress is progress.",
-    "Remember to smile even through all the challenges."
   ],
   tired:[
     "Rest is not lazy. You deserve it.",
@@ -197,8 +199,7 @@ const notes = {
   ]
 };
 
-// Track the current index for each mood
-const noteIndex = { sad:0, happy:0, overwhelmed:0, tired:0 };
+const noteIndex = { reassurance:0, sad:0, happy:0, tired:0 };
 
 function showPage(pageId,bgColor){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
